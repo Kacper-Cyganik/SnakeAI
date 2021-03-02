@@ -17,7 +17,7 @@ public class Menu extends Pane {
     Label score;
     public Menu(){
 
-        img_restart = new Image("Snake/images/restartButton.png");
+        img_restart = new Image("/Snake/images/restartButton.png");
 
         //score = new Label();
         restartButtonIV = new ImageView(img_restart);

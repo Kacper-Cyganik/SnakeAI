@@ -4,55 +4,66 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Grid extends GridPane{
+public class Grid extends GridPane {
 
+    private Rectangle[][] gameBoard;
+    private int widthInBlocks;
+    private int heightInBlocks;
+    private Color gridColor;
+    private final int blockSize = 16;
+    private final int gapSize = 1;
 
-
-    private int width_in_blocks; //szerokosc w blokach
-    private int height_in_blocks; //wysokosc w blokach
-    private Rectangle [][] rect_arr;
-    private int rect_width=16;
-    private int rect_height=16;
-    Color blue = Color.BLUE;
-    Color green = Color.GREEN;
-
-    public Grid(int width_in_blocks, int height_in_blocks){
-        this.width_in_blocks=width_in_blocks;
-        this.height_in_blocks=height_in_blocks;
-        this.setHgap(1);
-        this.setVgap(1);
-
-        rect_arr = new Rectangle [height_in_blocks][width_in_blocks];
-        System.out.println("lol\n");
-        draw_grid();
+    public Grid(int widthInBlocks, int heightInBlocks, Color gridColor) {
+        this.widthInBlocks = widthInBlocks;
+        this.heightInBlocks = heightInBlocks;
+        this.gridColor = gridColor;
+        this.initializeGameBoard();
     }
 
-    public int getWidth_in_blocks() {
-        return width_in_blocks;
+    private void initializeGameBoard() {
+        this.gameBoard = new Rectangle[this.heightInBlocks][this.widthInBlocks];
+        addBlocksToBoard();
+        setGapsBetweenBlocks();
     }
 
-    public void setWidth_in_blocks(int width_in_blocks) {
-        this.width_in_blocks = width_in_blocks;
-    }
-
-    public int getHeight_in_blocks() {
-        return height_in_blocks;
-    }
-
-    public void setHeight_in_blocks(int height_in_blocks) {
-        this.height_in_blocks = height_in_blocks;
-    }
-
-
-    public void draw_grid(){
-        for(int i=0; i<height_in_blocks; i++){
-            for(int j=0; j<width_in_blocks; j++){
-                Rectangle rectangle = new Rectangle(rect_width, rect_height);
-                rectangle.setFill(blue);
-                rect_arr[i][j]=rectangle;
-                this.add(rectangle, i+1, j+1);
-
+    public void addBlocksToBoard() {
+        for (int i = 0; i < heightInBlocks; i++) {
+            for (int j = 0; j < widthInBlocks; j++) {
+                Rectangle rectangle = new Rectangle(blockSize, blockSize);
+                rectangle.setFill(gridColor);
+                gameBoard[i][j] = rectangle;
+                this.add(rectangle, i + 1, j + 1);
             }
         }
-        }
     }
+
+    private void setGapsBetweenBlocks() {
+        this.setHgap(gapSize);
+        this.setVgap(gapSize);
+    }
+
+    public int getWidthInBlocks() {
+        return widthInBlocks;
+    }
+
+    public void setWidthInBlocks(int widthInBlocks) {
+        this.widthInBlocks = widthInBlocks;
+    }
+
+    public int getHeightInBlocks() {
+        return heightInBlocks;
+    }
+
+    public void setHeightInBlocks(int heightInBlocks) {
+        this.heightInBlocks = heightInBlocks;
+    }
+
+    public int getBlockSize() {
+        return blockSize;
+    }
+
+    public int getGapSize(){
+        return gapSize;
+    }
+
+}
