@@ -9,7 +9,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    Color backgroundColor = Color.BLACK;
+    private Color backgroundColor = Color.BLACK;
+    private Snake snake;
 
     @Override
     public void start(Stage primaryStage) {
@@ -22,6 +23,7 @@ public class Main extends Application {
         Window.setResizable(false);
 
         Window.show();
+        snake = new Snake(grid);
     }
 
     public static void main(String[] args) {
