@@ -13,8 +13,8 @@ public class GameGrid {
         this.width = width;
         this.height = height;
         this.grid = new GameObject[height][width];
-        this.emptyBlocksLeft = height * width;
         initializeGridWithEmptyBlocks();
+        this.emptyBlocksLeft = height * width;
     }
 
     private void initializeGridWithEmptyBlocks() {
@@ -34,23 +34,61 @@ public class GameGrid {
                 }
             }
         }
+        this.emptyBlocksLeft = height * width;
     }
 
     public Boolean createNewApple() {
         if (emptyBlocksLeft <= 0) {
             return false;
         }
+        if (emptyBlocksLeft < 0.3 * width * height) {
+            createAppleInFilleGrid();
+        } else {
+            createAppleInSparseFilledGrid();
+        }
+
+        return true;
+    }
+
+    private void createAppleInFilleGrid() {
         Random random = new Random();
-        int newWidth;
-        int newHeight;
+        Integer randomWidth = random.nextInt() % width;
+        Integer randomHeight = random.nextInt() % height;
+        for (int h = 0; h < height; h++) {
+            for (int w = 0; w < width; w++) {
+                Integer newWidth = (randomWidth + w) % width;
+                Integer newHeight = (randomHeight + h) % height;
+                if (grid[newHeight][newWidth].getClass().equals(EmptyBlock.class)) {
+                    addToGrid(new Apple(newWidth, newHeight));
+                    return;
+                }
+            }
+        }
+        System.out.println("Critical logic error"); // DEBUG
+    }
+
+    private void createAppleInSparseFilledGrid() {
+        Random random = new Random();
+        Integer newWidth;
+        Integer newHeight;
         do {
             newWidth = random.nextInt() % width;
             newHeight = random.nextInt() % height;
         } while (grid[newHeight][newWidth].getClass().equals(EmptyBlock.class));
-        // grid[i][j] == EmptyBlock
-        grid[newHeight][newWidth] = new Apple(newWidth, newHeight);
-        emptyBlocksLeft--;
-        return true;
+        // (grid[i][j] == EmptyBlock) ^
+        addToGrid(new Apple(newWidth, newHeight));
+    }
+
+    public void addToGrid(GameObject newGameObject) {
+        Integer x = newGameObject.getX();
+        Integer y = newGameObject.getY();
+        if (grid[y][x].getClass().equals(EmptyBlock.class) && !newGameObject.getClass().equals(EmptyBlock.class)) {
+            emptyBlocksLeft--;
+        } else if (!grid[y][x].getClass().equals(EmptyBlock.class)
+                && newGameObject.getClass().equals(EmptyBlock.class)) {
+            emptyBlocksLeft++;
+        }
+        grid[y][x] = newGameObject;
     }
 
     public Integer getWidth() {
@@ -72,4 +110,13 @@ public class GameGrid {
     public GameObject[][] getGrid() {
         return grid;
     }
+
+    public void setEmptyBlocksLeft(Integer emptyBlocksLeft) {
+        this.emptyBlocksLeft = emptyBlocksLeft;
+    }
+
+    public Integer getEmptyBlocksLeft() {
+        return emptyBlocksLeft;
+    }
+
 }

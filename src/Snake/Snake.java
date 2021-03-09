@@ -1,9 +1,8 @@
 package Snake;
 
+import javafx.util.Pair;
+
 import java.util.List;
-
-import javax.swing.border.EmptyBorder;
-
 import java.util.LinkedList;
 
 public class Snake {
@@ -11,9 +10,21 @@ public class Snake {
     private GameGrid grid;
     private List<SnakeBlock> snakeBody;
     private Integer length;
+    private Direction lastDirection;
 
     public enum Direction {
         UP, DOWN, LEFT, RIGHT;
+
+        public static Direction oppositeDirectionTo(Direction direction) {
+            if (direction == UP) {
+                return DOWN;
+            } else if (direction == DOWN) {
+                return UP;
+            } else if (direction == LEFT) {
+                return RIGHT;
+            } else // (direction == RIGHT){
+                return LEFT;
+        }
     }
 
     public Snake(GameGrid grid, Integer length) {
@@ -33,14 +44,27 @@ public class Snake {
     private void initializeSnake() {
         Integer snakePositionX = grid.getWidth() / 2;
         Integer snakePositionY = grid.getHeight() / 2;
-        for (int i = 0; i < length; i++) {
-            SnakeBlock snakeBlock = new SnakeBlock(snakePositionX + i, snakePositionY);
-            snakeBody.add(snakeBlock);
-        }
+        SnakeBlock snakeBlock = new SnakeBlock(snakePositionX, snakePositionY);
+        snakeBody.add(snakeBlock);
+        grid.addToGrid(snakeBlock);
     }
 
     public Boolean move(Direction direction) {
-        // TODO - zabezpieczyć przed głupimi danymi
+        if (direction == Direction.oppositeDirectionTo(lastDirection)) {
+            direction = lastDirection;
+        }
+        Pair<Integer, Integer> newHeadPlace = getCoordinatesForHeadAfterMove(direction);
+        if (checkIfOccuresCollision(newHeadPlace)) {
+            return false;
+        } else {
+            makeMove(newHeadPlace);
+            lastDirection = direction;
+            return true;
+        }
+    }
+
+
+    private Pair<Integer, Integer> getCoordinatesForHeadAfterMove(final Direction direction) {
         SnakeBlock snakeHead = snakeBody.get(0);
         Integer newX;
         Integer newY;
@@ -57,22 +81,12 @@ public class Snake {
             newX = snakeHead.getX();
             newY = snakeHead.getY() + 1;
         }
-        if (checkCollision(newX, newY)) {
-            return false;
-        }
-        SnakeBlock newSnakeHead = new SnakeBlock(newX, newY);
-        grid.getGrid()[newY][newX] = newSnakeHead;
-        snakeBody.add(0, newSnakeHead);
-        if (snakeBody.size() >= length) {
-            SnakeBlock removedTail = snakeBody.remove(snakeBody.size() - 1);
-            Integer lastX = removedTail.getX();
-            Integer lastY = removedTail.getY();
-            grid.getGrid()[lastY][lastX] = new EmptyBlock(lastX, lastY);
-        }
-        return true;
+        return new Pair<Integer, Integer>(newX, newY);
     }
 
-    private Boolean checkCollision(Integer newX, Integer newY) {
+    private Boolean checkIfOccuresCollision(final Pair<Integer, Integer> newHeadPlace) {
+        Integer newX = newHeadPlace.getKey();
+        Integer newY = newHeadPlace.getValue();
         if ((newX < 0 || newX >= grid.getWidth()) || (newY < 0 || newY >= grid.getHeight())) {
             return true;
         } else if (grid.getGrid()[newY][newX].getClass().equals(Snake.class)) {
@@ -82,10 +96,25 @@ public class Snake {
         }
     }
 
+    private void makeMove(final Pair<Integer, Integer> newHeadPlace) {
+        Integer newX = newHeadPlace.getKey();
+        Integer newY = newHeadPlace.getValue();
+        SnakeBlock newSnakeHead = new SnakeBlock(newX, newY);
+        grid.addToGrid(newSnakeHead);
+        snakeBody.add(0, newSnakeHead);
+        if (snakeBody.size() > length) {
+            SnakeBlock removedTail = snakeBody.remove(snakeBody.size() - 1);
+            Integer lastX = removedTail.getX();
+            Integer lastY = removedTail.getY();
+            EmptyBlock newEmptyBlock = new EmptyBlock(lastX, lastY);
+            grid.addToGrid(newEmptyBlock);
+        }
+    }
+
     public void setLength(Integer length) {
         final Integer minSnakeLength = 2;
         this.length = Math.max(length, minSnakeLength);
-        final Integer maxSnakeLength = grid.getWidth() - grid.getWidth() / 2;
+        final Integer maxSnakeLength = grid.getWidth() * grid.getHeight() - 1;
         this.length = Math.min(this.length, maxSnakeLength);
     }
 
