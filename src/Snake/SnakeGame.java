@@ -4,7 +4,6 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -13,20 +12,18 @@ public class SnakeGame extends Application {
     private Snake snake;
     private Integer snakeLength;
     private Boolean running;
-    Pane pane;
-    Scene scene;
-    Color backgroundColor = Color.BLACK;
-    Snake.Direction direction = Snake.Direction.LEFT; // TODO
-    Display display;
+    private Scene scene;
+    private Color backgroundColor = Color.BLACK;
+    private Snake.Direction direction = Snake.Direction.LEFT; // TODO
+    private Display display;
 
     public SnakeGame() {
-        grid = new GameGrid(20, 20);
-        snakeLength = 20;
+        grid = new GameGrid(25, 25);
+        snakeLength = 24;
     }
 
     public void start(Stage primaryStage) throws Exception {
         // primaryStage.setTitle("Snake");
-        pane = new Pane(); // TODO
         display = new Display(grid);
         // Height
         int blocksHeight = grid.getHeight() * display.getRectSize();
@@ -66,19 +63,19 @@ public class SnakeGame extends Application {
             public void handle(long now) {
                 if (lastTick == 0) {
                     lastTick = now;
+                    display.display();
                     return;
                 }
 
-                if (now - lastTick > 120000000) {
-
+                if (now - lastTick > 100000000) {
+                    display.display();
                     lastTick = now;
-
                     if (running) {
                         if (!snake.move(direction)) {
                             running = false;
+                        } else {
+                            grid.createNewApple();
                         }
-                        grid.createNewApple();
-                        display.display();
                     } else {
                         display.displayGameOver();
                     }

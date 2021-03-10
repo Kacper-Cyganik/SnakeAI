@@ -38,9 +38,9 @@ public class Display extends GridPane {
     }
 
     private void initializeGameOverColors() {
-        gameOverColors.put(EmptyBlock.class, Color.DARKBLUE);
+        gameOverColors.put(EmptyBlock.class, Color.BLACK);
         gameOverColors.put(SnakeBlock.class, Color.RED);
-        gameOverColors.put(AppleBlock.class, Color.DARKRED);
+        gameOverColors.put(AppleBlock.class, Color.BLACK);
     }
 
     private void initializeDisplayedSquares() {
