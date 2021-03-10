@@ -21,7 +21,7 @@ public class SnakeGame extends Application {
 
     public SnakeGame() {
         grid = new GameGrid(20, 20);
-        snakeLength = 2;
+        snakeLength = 20;
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -69,7 +69,7 @@ public class SnakeGame extends Application {
                     return;
                 }
 
-                if (now - lastTick > 160000000) {
+                if (now - lastTick > 120000000) {
 
                     lastTick = now;
 
