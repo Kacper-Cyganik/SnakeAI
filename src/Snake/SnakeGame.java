@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class SnakeGame extends Application {
@@ -14,23 +15,34 @@ public class SnakeGame extends Application {
     private Boolean running;
     Pane pane;
     Scene scene;
-
+    Color backgroundColor = Color.BLACK;
     Snake.Direction direction = Snake.Direction.LEFT; // TODO
+    Display display;
 
     public SnakeGame() {
-        grid = new GameGrid(10, 10);
+        grid = new GameGrid(20, 20);
         snakeLength = 2;
     }
 
     public void start(Stage primaryStage) throws Exception {
         // primaryStage.setTitle("Snake");
         pane = new Pane(); // TODO
-        scene = new Scene(new Display(grid), 300, 275); // TODO
+        display = new Display(grid);
+        // Height
+        int blocksHeight = grid.getHeight() * display.getRectSize();
+        int gapsInHeight = (grid.getHeight() - 3) * display.getGapSize();
+        int gridHeight = blocksHeight + gapsInHeight;
+        // Width
+        int blocksWidth = grid.getWidth() * display.getRectSize();
+        int gapsInWidth = (grid.getWidth() - 3) * display.getGapSize();
+        ////////
+        int gridWidth = blocksWidth + gapsInWidth;
+        scene = new Scene(display, gridHeight, gridWidth, backgroundColor); // TODO
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         snake = new Snake(grid, snakeLength);
-
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.RIGHT) {
                 direction = Snake.Direction.RIGHT;
@@ -64,6 +76,9 @@ public class SnakeGame extends Application {
                         if (!snake.move(direction)) {
                             running = false;
                         }
+                        display.display();
+                    } else {
+                        display.displayGameOver();
                     }
                 }
             }

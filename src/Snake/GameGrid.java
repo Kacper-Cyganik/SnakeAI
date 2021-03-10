@@ -38,10 +38,10 @@ public class GameGrid {
     }
 
     public Boolean createNewApple() {
-        Apple newApple;
         if (emptyBlocksLeft <= 0) {
             return false;
         }
+        Apple newApple;
         if (emptyBlocksLeft < 0.3 * width * height) {
             newApple = createAppleInFilledGrid();
         } else {
