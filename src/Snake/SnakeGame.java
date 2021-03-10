@@ -43,19 +43,20 @@ public class SnakeGame extends Application {
         primaryStage.show();
 
         snake = new Snake(grid, snakeLength);
+        grid.createNewApple();
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.RIGHT) {
                 direction = Snake.Direction.RIGHT;
-                System.out.println("PRAWO");
+                // System.out.println("PRAWO");
             } else if (e.getCode() == KeyCode.UP) {
                 direction = Snake.Direction.UP;
-                System.out.println("GORA");
+                // System.out.println("GORA");
             } else if (e.getCode() == KeyCode.LEFT) {
                 direction = Snake.Direction.LEFT;
-                System.out.println("LEWO");
+                // System.out.println("LEWO");
             } else if (e.getCode() == KeyCode.DOWN) {
                 direction = Snake.Direction.DOWN;
-                System.out.println("DOL");
+                // System.out.println("DOL");
             }
         });
 
@@ -68,7 +69,7 @@ public class SnakeGame extends Application {
                     return;
                 }
 
-                if (now - lastTick > 100000000) {
+                if (now - lastTick > 160000000) {
 
                     lastTick = now;
 
@@ -76,6 +77,7 @@ public class SnakeGame extends Application {
                         if (!snake.move(direction)) {
                             running = false;
                         }
+                        grid.createNewApple();
                         display.display();
                     } else {
                         display.displayGameOver();

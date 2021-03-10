@@ -1,6 +1,5 @@
 package Snake;
 
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -32,7 +31,7 @@ public class Display extends GridPane {
     private void initializeDictionaryWithColors() {
         dictionary.put(EmptyBlock.class, Color.BLUE);
         dictionary.put(SnakeBlock.class, Color.GREEN);
-        dictionary.put(Apple.class, Color.RED);
+        dictionary.put(AppleBlock.class, Color.RED);
     }
 
     private void initializeDisplayedSquares() {
@@ -42,7 +41,7 @@ public class Display extends GridPane {
                 Rectangle currentRect = new Rectangle(rectSize, rectSize);
                 Color currentColor = dictionary.get(grid.getGrid()[i][j].getClass());
                 currentRect.setFill(currentColor);
-                this.add(currentRect, i + 1, j + 1);
+                this.add(currentRect, j + 1, i + 1);
                 gridPaneRectangles[i][j] = currentRect;
             }
         }

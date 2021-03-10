@@ -1,6 +1,7 @@
 package Snake;
 
 import java.util.Random;
+import java.util.function.Function;
 
 public class GameGrid {
 
@@ -8,10 +9,12 @@ public class GameGrid {
     private Integer width;
     private Integer height;
     private Integer emptyBlocksLeft;
+    private Boolean appleExists;
 
     GameGrid(Integer width, Integer height) {
         this.width = width;
         this.height = height;
+        this.appleExists = false;
         this.grid = new GameObject[height][width];
         initializeGridWithEmptyBlocks();
         this.emptyBlocksLeft = height * width;
@@ -38,29 +41,32 @@ public class GameGrid {
     }
 
     public Boolean createNewApple() {
-        if (emptyBlocksLeft <= 0) {
+        if (appleExists) {
+            return false;
+        } else if (emptyBlocksLeft <= 0) {
             return false;
         }
-        Apple newApple;
+        AppleBlock newApple;
         if (emptyBlocksLeft < 0.3 * width * height) {
             newApple = createAppleInFilledGrid();
         } else {
             newApple = createAppleInSparseFilledGrid();
         }
         addToGrid(newApple);
+        appleExists = true;
         return true;
     }
 
-    private Apple createAppleInFilledGrid() {
+    private AppleBlock createAppleInFilledGrid() {
         Random random = new Random();
-        Integer randomWidth = random.nextInt() % width;
-        Integer randomHeight = random.nextInt() % height;
+        Integer randomWidth = random.nextInt(width);
+        Integer randomHeight = random.nextInt(height);
         for (int h = 0; h < height; h++) {
             for (int w = 0; w < width; w++) {
                 Integer newWidth = (randomWidth + w) % width;
                 Integer newHeight = (randomHeight + h) % height;
                 if (grid[newHeight][newWidth].getClass().equals(EmptyBlock.class)) {
-                    return new Apple(newWidth, newHeight);
+                    return new AppleBlock(newWidth, newHeight);
                 }
             }
         }
@@ -68,16 +74,16 @@ public class GameGrid {
         return null;
     }
 
-    private Apple createAppleInSparseFilledGrid() {
+    private AppleBlock createAppleInSparseFilledGrid() {
         Random random = new Random();
         Integer newWidth;
         Integer newHeight;
         do {
-            newWidth = random.nextInt() % width;
-            newHeight = random.nextInt() % height;
-        } while (grid[newHeight][newWidth].getClass().equals(EmptyBlock.class));
+            newWidth = random.nextInt(width);
+            newHeight = random.nextInt(height);
+        } while (!grid[newHeight][newWidth].getClass().equals(EmptyBlock.class));
         // (grid[i][j] == EmptyBlock) ^
-        return new Apple(newWidth, newHeight);
+        return new AppleBlock(newWidth, newHeight);
     }
 
     public void addToGrid(GameObject newGameObject) {
@@ -118,6 +124,18 @@ public class GameGrid {
 
     public Integer getEmptyBlocksLeft() {
         return emptyBlocksLeft;
+    }
+
+    public Boolean getAppleExists() {
+        return appleExists;
+    }
+
+    public void setAppleExists(Boolean appleExists) {
+        this.appleExists = appleExists;
+    }
+
+    public void appleCollected() {
+        appleExists = false;
     }
 
 }

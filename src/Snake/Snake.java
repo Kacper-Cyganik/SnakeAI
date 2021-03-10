@@ -50,23 +50,25 @@ public class Snake {
     }
 
     public Boolean move(Direction direction) {
-        if (direction == Direction.oppositeDirectionTo(lastDirection)) {
+        if (direction == Direction.oppositeDirectionTo(lastDirection) && lastDirection != null) {
             direction = lastDirection;
         }
         Pair<Integer, Integer> newHeadPlace = getCoordinatesForHeadAfterMove(direction);
         if (checkIfOccuresCollision(newHeadPlace)) {
             return false;
-        } else {
-            makeMove(newHeadPlace);
-            lastDirection = direction;
-            return true;
         }
+        if (checkIfOccuresAnApple(newHeadPlace)) {
+            length++;
+            grid.appleCollected();
+        }
+        makeMove(newHeadPlace);
+        lastDirection = direction;
+        return true;
     }
-
 
     private Pair<Integer, Integer> getCoordinatesForHeadAfterMove(final Direction direction) {
         SnakeBlock snakeHead = snakeBody.get(0);
-        //System.out.println(snakeHead.getX()+" "+snakeHead.getY());
+        // System.out.println(snakeHead.getX()+" "+snakeHead.getY());
         Integer newX;
         Integer newY;
         if (direction == Direction.LEFT) {
@@ -90,11 +92,17 @@ public class Snake {
         Integer newY = newHeadPlace.getValue();
         if ((newX < 0 || newX >= grid.getWidth()) || (newY < 0 || newY >= grid.getHeight())) {
             return true;
-        } else if (grid.getGrid()[newY][newX].getClass().equals(Snake.class)) {
+        } else if (grid.getGrid()[newY][newX].getClass().equals(SnakeBlock.class)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private Boolean checkIfOccuresAnApple(final Pair<Integer, Integer> newHeadPlace) {
+        Integer newX = newHeadPlace.getKey();
+        Integer newY = newHeadPlace.getValue();
+        return grid.getGrid()[newY][newX].getClass().equals(AppleBlock.class);
     }
 
     private void makeMove(final Pair<Integer, Integer> newHeadPlace) {
