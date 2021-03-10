@@ -18,14 +18,14 @@ public class SnakeGame extends Application {
     Snake.Direction direction = Snake.Direction.LEFT; // TODO
 
     public SnakeGame() {
-        grid = new GameGrid(5, 5);
+        grid = new GameGrid(10, 10);
         snakeLength = 2;
     }
 
     public void start(Stage primaryStage) throws Exception {
         // primaryStage.setTitle("Snake");
         pane = new Pane(); // TODO
-        scene = new Scene(pane, 300, 275); // TODO
+        scene = new Scene(new Display(grid), 300, 275); // TODO
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -55,8 +55,11 @@ public class SnakeGame extends Application {
                     lastTick = now;
                     return;
                 }
+
                 if (now - lastTick > 100000000) {
+
                     lastTick = now;
+
                     if (running) {
                         if (!snake.move(direction)) {
                             running = false;

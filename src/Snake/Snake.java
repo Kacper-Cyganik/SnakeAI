@@ -66,6 +66,7 @@ public class Snake {
 
     private Pair<Integer, Integer> getCoordinatesForHeadAfterMove(final Direction direction) {
         SnakeBlock snakeHead = snakeBody.get(0);
+        //System.out.println(snakeHead.getX()+" "+snakeHead.getY());
         Integer newX;
         Integer newY;
         if (direction == Direction.LEFT) {

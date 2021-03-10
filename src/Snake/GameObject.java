@@ -4,6 +4,8 @@ public abstract class GameObject {
     protected Integer x;
     protected Integer y;
 
+
+
     public Integer getX() {
         return x;
     }
@@ -19,4 +21,6 @@ public abstract class GameObject {
     public void setY(Integer y) {
         this.y = y;
     }
+
+
 }

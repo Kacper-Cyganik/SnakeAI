@@ -38,19 +38,20 @@ public class GameGrid {
     }
 
     public Boolean createNewApple() {
+        Apple newApple;
         if (emptyBlocksLeft <= 0) {
             return false;
         }
         if (emptyBlocksLeft < 0.3 * width * height) {
-            createAppleInFilleGrid();
+            newApple = createAppleInFilledGrid();
         } else {
-            createAppleInSparseFilledGrid();
+            newApple = createAppleInSparseFilledGrid();
         }
-
+        addToGrid(newApple);
         return true;
     }
 
-    private void createAppleInFilleGrid() {
+    private Apple createAppleInFilledGrid() {
         Random random = new Random();
         Integer randomWidth = random.nextInt() % width;
         Integer randomHeight = random.nextInt() % height;
@@ -59,15 +60,15 @@ public class GameGrid {
                 Integer newWidth = (randomWidth + w) % width;
                 Integer newHeight = (randomHeight + h) % height;
                 if (grid[newHeight][newWidth].getClass().equals(EmptyBlock.class)) {
-                    addToGrid(new Apple(newWidth, newHeight));
-                    return;
+                    return new Apple(newWidth, newHeight);
                 }
             }
         }
         System.out.println("Critical logic error"); // DEBUG
+        return null;
     }
 
-    private void createAppleInSparseFilledGrid() {
+    private Apple createAppleInSparseFilledGrid() {
         Random random = new Random();
         Integer newWidth;
         Integer newHeight;
@@ -76,7 +77,7 @@ public class GameGrid {
             newHeight = random.nextInt() % height;
         } while (grid[newHeight][newWidth].getClass().equals(EmptyBlock.class));
         // (grid[i][j] == EmptyBlock) ^
-        addToGrid(new Apple(newWidth, newHeight));
+        return new Apple(newWidth, newHeight);
     }
 
     public void addToGrid(GameObject newGameObject) {
