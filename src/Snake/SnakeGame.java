@@ -4,7 +4,6 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -27,15 +26,15 @@ public class SnakeGame extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
-        this.primaryStage=primaryStage;
+        this.primaryStage = primaryStage;
         startGame();
     }
 
-    public void startGame(){
+    public void startGame() {
         direction = Snake.Direction.LEFT;
         grid = new GameGrid(20, 20);
         menu = new Menu();
-        display = new Display(grid,menu);
+        display = new Display(grid, menu);
         // Height
         int blocksHeight = grid.getHeight() * display.getRectSize();
         int gapsInHeight = (grid.getHeight()) * display.getGapSize();
@@ -43,7 +42,7 @@ public class SnakeGame extends Application {
         // Width
         int blocksWidth = grid.getWidth() * display.getRectSize();
         int gapsInWidth = (grid.getWidth()) * display.getGapSize();
-        int width = blocksWidth + gapsInWidth+25;
+        int width = blocksWidth + gapsInWidth + 25;
         ////////
         scene = new Scene(display, height, width, backgroundColor);
         primaryStage.setScene(scene);
@@ -53,14 +52,21 @@ public class SnakeGame extends Application {
 
         snake = new Snake(grid, snakeLength);
         grid.createNewApple();
+        display.display();
 
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.D) direction = Snake.Direction.RIGHT;
-            else if (e.getCode() == KeyCode.W) direction = Snake.Direction.UP;
-            else if (e.getCode() == KeyCode.A) direction = Snake.Direction.LEFT;
-            else if (e.getCode() == KeyCode.S) direction = Snake.Direction.DOWN;
-            else if (e.getCode() == KeyCode.P)  menu.setPauseGame(!menu.getPauseGame());
-            else if (e.getCode() == KeyCode.R)  restart();
+            if (e.getCode() == KeyCode.D)
+                direction = Snake.Direction.RIGHT;
+            else if (e.getCode() == KeyCode.W)
+                direction = Snake.Direction.UP;
+            else if (e.getCode() == KeyCode.A)
+                direction = Snake.Direction.LEFT;
+            else if (e.getCode() == KeyCode.S)
+                direction = Snake.Direction.DOWN;
+            else if (e.getCode() == KeyCode.P)
+                menu.setPauseGame(!menu.getPauseGame());
+            else if (e.getCode() == KeyCode.R)
+                restart();
         });
 
         timer = new AnimationTimer() {
@@ -81,8 +87,8 @@ public class SnakeGame extends Application {
                             if (!snake.move(direction)) {
                                 running = false;
                             }
-                            if(grid.createNewApple()) menu.updateScore();
-
+                            if (grid.createNewApple())
+                                menu.updateScore();
 
                             display.display();
                         } else {
@@ -97,16 +103,19 @@ public class SnakeGame extends Application {
         timer.start();
 
     }
-    public void GameOver(){
+
+    public void GameOver() {
         System.out.println("GAME OVER");
         timer.stop();
         display.getChildren().removeAll();
 
     }
-    public void restart(){
+
+    public void restart() {
         GameOver();
         startGame();
     }
+
     public static void main(String[] args) {
         launch(args);
     }

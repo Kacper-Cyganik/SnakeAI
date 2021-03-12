@@ -1,7 +1,6 @@
 package Snake;
 
 import java.util.Random;
-import java.util.function.Function;
 
 public class GameGrid {
 

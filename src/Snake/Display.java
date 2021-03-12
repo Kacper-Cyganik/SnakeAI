@@ -1,6 +1,10 @@
 package Snake;
 
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -10,26 +14,32 @@ import java.util.Map;
 
 public class Display extends BorderPane {
 
-    Map<Class, Color> dictionary;
-    GameGrid grid;
-    GridPane gridpane;
-    Integer rectSize = 16;
-    Integer gapSize = 1;
-    Menu menu;
-    Rectangle[][] gridPaneRectangles; // DEBUG
+    private Map<Class, Color> dictionary;
+    private GameGrid grid;
+    private GridPane gridpane;
+    private Integer rectSize = 16;
+    private Integer gapSize = 1;
+    private Menu menu;
+    private Rectangle[][] gridPaneRectangles; // DEBUG
 
     public Display(GameGrid grid, Menu menu) {
         this.dictionary = new HashMap<Class, Color>();
         this.grid = grid;
         this.menu = menu;
-        gridpane = new GridPane();
+        this.gridpane = new GridPane();
+        setBlackBackGroundToGridPane();
         initializeDictionaryWithColors();
         initializeDisplayedSquares();
         setGapsBetweenBlocks();
 
-
         this.setCenter(gridpane);
         this.setTop(this.menu);
+    }
+
+    private void setBlackBackGroundToGridPane() {
+        BackgroundFill background_fill = new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY);
+        Background background = new Background(background_fill);
+        this.gridpane.setBackground(background);
     }
 
     private void setGapsBetweenBlocks() {
@@ -73,7 +83,6 @@ public class Display extends BorderPane {
         Color colorThatShouldBe = dictionary.get(respondingGameObject.getClass());
         return !currentColor.equals(colorThatShouldBe);
     }
-
 
     public Map<Class, Color> getDictionary() {
         return dictionary;
