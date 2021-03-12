@@ -1,5 +1,6 @@
 package Snake;
 
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -7,25 +8,33 @@ import javafx.scene.shape.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Display extends GridPane {
+public class Display extends BorderPane {
 
     Map<Class, Color> dictionary;
     GameGrid grid;
+    GridPane gridpane;
     Integer rectSize = 16;
     Integer gapSize = 1;
+    Menu menu;
     Rectangle[][] gridPaneRectangles; // DEBUG
 
-    public Display(GameGrid grid) {
+    public Display(GameGrid grid, Menu menu) {
         this.dictionary = new HashMap<Class, Color>();
         this.grid = grid;
+        this.menu = menu;
+        gridpane = new GridPane();
         initializeDictionaryWithColors();
         initializeDisplayedSquares();
         setGapsBetweenBlocks();
+
+
+        this.setCenter(gridpane);
+        this.setTop(this.menu);
     }
 
     private void setGapsBetweenBlocks() {
-        this.setHgap(gapSize);
-        this.setVgap(gapSize);
+        gridpane.setHgap(gapSize);
+        gridpane.setVgap(gapSize);
     }
 
     private void initializeDictionaryWithColors() {
@@ -41,7 +50,7 @@ public class Display extends GridPane {
                 Rectangle currentRect = new Rectangle(rectSize, rectSize);
                 Color currentColor = dictionary.get(grid.getGrid()[i][j].getClass());
                 currentRect.setFill(currentColor);
-                this.add(currentRect, j + 1, i + 1);
+                gridpane.add(currentRect, j + 1, i + 1);
                 gridPaneRectangles[i][j] = currentRect;
             }
         }
@@ -65,9 +74,6 @@ public class Display extends GridPane {
         return !currentColor.equals(colorThatShouldBe);
     }
 
-    public void displayGameOver() {
-
-    }
 
     public Map<Class, Color> getDictionary() {
         return dictionary;

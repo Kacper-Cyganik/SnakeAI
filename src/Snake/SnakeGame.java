@@ -11,56 +11,59 @@ import javafx.stage.Stage;
 public class SnakeGame extends Application {
     private GameGrid grid;
     private Snake snake;
-    private Integer snakeLength;
+    private final Integer snakeLength;
     private Boolean running;
-    Pane pane;
     Scene scene;
-    Color backgroundColor = Color.BLACK;
-    Snake.Direction direction = Snake.Direction.LEFT; // TODO
+    Menu menu;
+    Color backgroundColor;
+    Snake.Direction direction;
     Display display;
+    AnimationTimer timer;
+    Stage primaryStage;
 
     public SnakeGame() {
-        grid = new GameGrid(20, 20);
-        snakeLength = 2;
+        backgroundColor = Color.BLACK;
+        snakeLength = 5;
     }
 
     public void start(Stage primaryStage) throws Exception {
-        // primaryStage.setTitle("Snake");
-        pane = new Pane(); // TODO
-        display = new Display(grid);
+        this.primaryStage=primaryStage;
+        startGame();
+    }
+
+    public void startGame(){
+        direction = Snake.Direction.LEFT;
+        grid = new GameGrid(20, 20);
+        menu = new Menu();
+        display = new Display(grid,menu);
         // Height
         int blocksHeight = grid.getHeight() * display.getRectSize();
-        int gapsInHeight = (grid.getHeight() - 3) * display.getGapSize();
-        int gridHeight = blocksHeight + gapsInHeight;
+        int gapsInHeight = (grid.getHeight()) * display.getGapSize();
+        int height = blocksHeight + gapsInHeight;
         // Width
         int blocksWidth = grid.getWidth() * display.getRectSize();
-        int gapsInWidth = (grid.getWidth() - 3) * display.getGapSize();
+        int gapsInWidth = (grid.getWidth()) * display.getGapSize();
+        int width = blocksWidth + gapsInWidth+25;
         ////////
-        int gridWidth = blocksWidth + gapsInWidth;
-        scene = new Scene(display, gridHeight, gridWidth, backgroundColor); // TODO
+        scene = new Scene(display, height, width, backgroundColor);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Snake");
         primaryStage.setResizable(false);
         primaryStage.show();
 
         snake = new Snake(grid, snakeLength);
         grid.createNewApple();
+
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.RIGHT) {
-                direction = Snake.Direction.RIGHT;
-                // System.out.println("PRAWO");
-            } else if (e.getCode() == KeyCode.UP) {
-                direction = Snake.Direction.UP;
-                // System.out.println("GORA");
-            } else if (e.getCode() == KeyCode.LEFT) {
-                direction = Snake.Direction.LEFT;
-                // System.out.println("LEWO");
-            } else if (e.getCode() == KeyCode.DOWN) {
-                direction = Snake.Direction.DOWN;
-                // System.out.println("DOL");
-            }
+            if (e.getCode() == KeyCode.D) direction = Snake.Direction.RIGHT;
+            else if (e.getCode() == KeyCode.W) direction = Snake.Direction.UP;
+            else if (e.getCode() == KeyCode.A) direction = Snake.Direction.LEFT;
+            else if (e.getCode() == KeyCode.S) direction = Snake.Direction.DOWN;
+            else if (e.getCode() == KeyCode.P)  menu.setPauseGame(!menu.getPauseGame());
+            else if (e.getCode() == KeyCode.R)  restart();
         });
 
-        AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             long lastTick = 0;
 
             public void handle(long now) {
@@ -68,27 +71,42 @@ public class SnakeGame extends Application {
                     lastTick = now;
                     return;
                 }
-
-                if (now - lastTick > 160000000) {
+                if (now - lastTick > 100000000) {
 
                     lastTick = now;
 
-                    if (running) {
-                        if (!snake.move(direction)) {
-                            running = false;
+                    if (!menu.getPauseGame()) {
+
+                        if (running) {
+                            if (!snake.move(direction)) {
+                                running = false;
+                            }
+                            if(grid.createNewApple()) menu.updateScore();
+
+
+                            display.display();
+                        } else {
+                            GameOver();
                         }
-                        grid.createNewApple();
-                        display.display();
-                    } else {
-                        display.displayGameOver();
                     }
                 }
             }
         };
         running = true;
+        timer.stop();
         timer.start();
-    }
 
+    }
+    public void GameOver(){
+        System.out.println("GAME OVER");
+        timer.stop();
+        display.getChildren().removeAll();
+
+    }
+    public void restart(){
+        GameOver();
+        startGame();
+    }
     public static void main(String[] args) {
         launch(args);
     }
