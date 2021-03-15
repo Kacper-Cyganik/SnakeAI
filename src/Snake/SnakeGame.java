@@ -37,14 +37,15 @@ public class SnakeGame extends Application {
         display = new Display(grid, menu);
         // Height
         int blocksHeight = grid.getHeight() * display.getRectSize();
-        int gapsInHeight = (grid.getHeight()) * display.getGapSize();
-        int height = blocksHeight + gapsInHeight;
+        int gapsInHeight = 0; // (grid.getHeight()) * display.getGapSize();
+        int menuHeight = 25;
+        int height = blocksHeight + gapsInHeight + menuHeight;
         // Width
         int blocksWidth = grid.getWidth() * display.getRectSize();
-        int gapsInWidth = (grid.getWidth()) * display.getGapSize();
-        int width = blocksWidth + gapsInWidth + 25;
+        int gapsInWidth = 0; // (grid.getWidth()) * display.getGapSize();
+        int width = blocksWidth + gapsInWidth;
         ////////
-        scene = new Scene(display, height, width, backgroundColor);
+        scene = new Scene(display, width, height, backgroundColor);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Snake");
         primaryStage.setResizable(false);
@@ -107,8 +108,7 @@ public class SnakeGame extends Application {
     public void GameOver() {
         System.out.println("GAME OVER");
         timer.stop();
-        display.getChildren().removeAll();
-
+        display.displayGameOver();
     }
 
     public void restart() {

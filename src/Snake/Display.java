@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class Display extends BorderPane {
 
-    private Map<Class, Color> dictionary;
+    private Map<Class, Color> gameColors;
+    private Map<Class, Color> gameOverColors;
     private GameGrid grid;
     private GridPane gridpane;
     private Integer rectSize = 16;
@@ -23,14 +24,16 @@ public class Display extends BorderPane {
     private Rectangle[][] gridPaneRectangles; // DEBUG
 
     public Display(GameGrid grid, Menu menu) {
-        this.dictionary = new HashMap<Class, Color>();
+        this.gameColors = new HashMap<Class, Color>();
+        this.gameOverColors = new HashMap<Class, Color>();
         this.grid = grid;
         this.menu = menu;
         this.gridpane = new GridPane();
         setBlackBackGroundToGridPane();
-        initializeDictionaryWithColors();
+        initializeGameColors();
+        initializeGameOverColors();
         initializeDisplayedSquares();
-        setGapsBetweenBlocks();
+        // setGapsBetweenBlocks();
 
         this.setCenter(gridpane);
         this.setTop(this.menu);
@@ -47,10 +50,16 @@ public class Display extends BorderPane {
         gridpane.setVgap(gapSize);
     }
 
-    private void initializeDictionaryWithColors() {
-        dictionary.put(EmptyBlock.class, Color.BLUE);
-        dictionary.put(SnakeBlock.class, Color.GREEN);
-        dictionary.put(AppleBlock.class, Color.RED);
+    private void initializeGameColors() {
+        gameColors.put(EmptyBlock.class, Color.BLACK);
+        gameColors.put(SnakeBlock.class, Color.GREEN);
+        gameColors.put(AppleBlock.class, Color.WHITE);
+    }
+
+    private void initializeGameOverColors() {
+        gameOverColors.put(EmptyBlock.class, Color.BLACK);
+        gameOverColors.put(SnakeBlock.class, Color.RED);
+        gameOverColors.put(AppleBlock.class, Color.DARKRED);
     }
 
     private void initializeDisplayedSquares() {
@@ -58,7 +67,7 @@ public class Display extends BorderPane {
         for (int i = 0; i < grid.getHeight(); i++) {
             for (int j = 0; j < grid.getWidth(); j++) {
                 Rectangle currentRect = new Rectangle(rectSize, rectSize);
-                Color currentColor = dictionary.get(grid.getGrid()[i][j].getClass());
+                Color currentColor = gameColors.get(grid.getGrid()[i][j].getClass());
                 currentRect.setFill(currentColor);
                 gridpane.add(currentRect, j + 1, i + 1);
                 gridPaneRectangles[i][j] = currentRect;
@@ -71,25 +80,43 @@ public class Display extends BorderPane {
             for (int j = 0; j < grid.getWidth(); j++) {
                 Rectangle currentRect = gridPaneRectangles[i][j];
                 if (doesColorHaveToBeChanged(currentRect, grid.getGrid()[i][j])) {
-                    Color newCurrentColor = dictionary.get(grid.getGrid()[i][j].getClass());
+                    Color newCurrentColor = gameColors.get(grid.getGrid()[i][j].getClass());
                     currentRect.setFill(newCurrentColor);
                 }
             }
         }
     }
 
+    public void displayGameOver() {
+        for (int i = 0; i < grid.getHeight(); i++) {
+            for (int j = 0; j < grid.getWidth(); j++) {
+                Rectangle currentRect = gridPaneRectangles[i][j];
+                Color currentColor = gameOverColors.get(grid.getGrid()[i][j].getClass());
+                currentRect.setFill(currentColor);
+            }
+        }
+    }
+
     private Boolean doesColorHaveToBeChanged(Rectangle rectangle, GameObject respondingGameObject) {
         Color currentColor = (Color) rectangle.getFill();
-        Color colorThatShouldBe = dictionary.get(respondingGameObject.getClass());
+        Color colorThatShouldBe = gameColors.get(respondingGameObject.getClass());
         return !currentColor.equals(colorThatShouldBe);
     }
 
-    public Map<Class, Color> getDictionary() {
-        return dictionary;
+    public Map<Class, Color> getGameColors() {
+        return gameColors;
     }
 
-    public void setDictionary(Map<Class, Color> dictionary) {
-        this.dictionary = dictionary;
+    public void setGameColors(Map<Class, Color> gameColors) {
+        this.gameColors = gameColors;
+    }
+
+    public Map<Class, Color> getGameOverColors() {
+        return gameOverColors;
+    }
+
+    public void setGameOverColors(Map<Class, Color> gameOverColors) {
+        this.gameOverColors = gameOverColors;
     }
 
     public Integer getRectSize() {
