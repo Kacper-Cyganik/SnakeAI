@@ -2,16 +2,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# Constatnts
+# Constants
 NUMBER_OF_BLOCKS = 20
-BLOCK_SIZE = 16
+BLOCK_SIZE = 20
 COLOR_CHANNELS = 3
-LOWER_HEIGHT_LIMIT = 56
+LOWER_HEIGHT_LIMIT = 63
 UPPER_HEIGHT_LIMIT = LOWER_HEIGHT_LIMIT + NUMBER_OF_BLOCKS * BLOCK_SIZE
 LOWER_WIDTH_LIMIT = 7
 UPPER__WIDTH_LIMIT = LOWER_WIDTH_LIMIT + NUMBER_OF_BLOCKS * BLOCK_SIZE
 MAX_PIXEL_VALUE = 255
-# END Constatnts
+# END Constants
 
 
 def preprocess_screen(captured_screen):
