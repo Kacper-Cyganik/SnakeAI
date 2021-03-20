@@ -1,3 +1,5 @@
+import pickle
+
 def save_object(_object, filename):
     with open(filename, "wb") as file:
         pickle.dump(_object, file)
